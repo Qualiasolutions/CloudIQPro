@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudIQ Pro - Executive Presentation | Qualia Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+          font-family: 'Inter', sans-serif;
+        }
+
+        .slide {
+            min-height: 100vh;
+            scroll-snap-align: start;
+        }
+        .presentation-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+        .gradient-qualia {
+            background: linear-gradient(135deg, #1e40af 0%, #3730a3 25%, #1e3a8a 50%, #1e40af 75%, #3730a3 100%);
+        }
+        .slide-number {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 50;
+            background: rgba(255,255,255,0.95);
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .navigation-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .nav-dot.active {
+            background: #1e40af;
+            transform: scale(1.2);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-inter bg-white overflow-hidden">
+    <!-- Slide Counter -->
+    <div class="slide-number" id="slideNumber">1 / 7</div>
+    
+    <!-- Navigation Dots -->
+    <div class="navigation-dots">
+        <div class="nav-dot active" onclick="goToSlide(0)"></div>
+        <div class="nav-dot" onclick="goToSlide(1)"></div>
+        <div class="nav-dot" onclick="goToSlide(2)"></div>
+        <div class="nav-dot" onclick="goToSlide(3)"></div>
+        <div class="nav-dot" onclick="goToSlide(4)"></div>
+        <div class="nav-dot" onclick="goToSlide(5)"></div>
+        <div class="nav-dot" onclick="goToSlide(6)"></div>
+    </div>
+
+    <div class="presentation-container" id="presentationContainer">
+        <!-- Content List Slide -->
+        <section class="slide bg-white flex items-center">
+            <div class="max-w-7xl mx-auto px-8 py-16">
+                <div class="text-center mb-16">
+                    <h2 class="text-5xl font-bold text-blue-800 mb-6">Presentation Overview</h2>
+                    <p class="text-xl text-gray-600">What we'll cover in the next 15 minutes</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-blue-50 p-8 border-l-4 border-blue-600 text-center">
+                        <div class="text-4xl font-bold text-blue-600 mb-4">1</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Solution Overview</h3>
+                        <p class="text-gray-600">What CloudIQ Pro does and key benefits</p>
+                    </div>
+                    
+                    <div class="bg-red-50 p-8 border-l-4 border-red-600 text-center">
+                        <div class="text-4xl font-bold text-red-600 mb-4">2</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Problem & Opportunity</h3>
+                        <p class="text-gray-600">Why companies need this solution now</p>
+                    </div>
+                    
+                    <div class="bg-green-50 p-8 border-l-4 border-green-600 text-center">
+                        <div class="text-4xl font-bold text-green-600 mb-4">3</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">How It Works</h3>
+                        <p class="text-gray-600">The technology that saves money and prevents problems</p>
+                    </div>
+                    
+                    <div class="bg-purple-50 p-8 border-l-4 border-purple-600 text-center">
+                        <div class="text-4xl font-bold text-purple-600 mb-4">4</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Live Demo</h3>
+                        <p class="text-gray-600">See the actual system working in real-time</p>
+                    </div>
+                    
+                    <div class="bg-orange-50 p-8 border-l-4 border-orange-600 text-center">
+                        <div class="text-4xl font-bold text-orange-600 mb-4">5</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Business Model</h3>
+                        <p class="text-gray-600">Pricing and return on investment</p>
+                    </div>
+                    
+                    <div class="bg-indigo-50 p-8 border-l-4 border-indigo-600 text-center">
+                        <div class="text-4xl font-bold text-indigo-600 mb-4">6</div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Next Steps</h3>
+                        <p class="text-gray-600">How to get started with a free trial</p>
+                    </div>
+                </div>
+                
+                <div class="mt-16 text-center">
+                    <div class="bg-blue-600 text-white p-6 max-w-2xl mx-auto">
+                        <h3 class="text-2xl font-bold mb-4">Key Takeaway</h3>
+                        <p class="text-lg">CloudIQ Pro can save your company 40% on cloud costs while preventing server downtime - and we can prove it with a free 30-day trial</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 1: Solution Overview -->
+        <section class="slide gradient-qualia flex items-center justify-center text-white">
+            <div class="text-center max-w-6xl mx-auto px-8">
+                <div class="mb-12">
+                    <div class="flex items-center justify-center space-x-4 mb-8">
+                        <div class="bg-white p-4 text-blue-600">
+                            <svg class="h-16 w-16" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                            </svg>
+                        </div>
+                        <h1 class="text-7xl font-bold">CloudIQ Pro</h1>
+                    </div>
+                    <h2 class="text-4xl font-light mb-8">AI-Powered Cloud Infrastructure Intelligence</h2>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-12 mb-16">
+                    <div class="bg-white bg-opacity-10 backdrop-blur-sm p-8">
+                        <div class="text-4xl font-bold mb-2">40%</div>
+                        <div class="text-xl">Cost Reduction</div>
+                    </div>
+                    <div class="bg-white bg-opacity-10 backdrop-blur-sm p-8">
+                        <div class="text-4xl font-bold mb-2">99.9%</div>
+                        <div class="text-xl">Uptime Guarantee</div>
+                    </div>
+                    <div class="bg-white bg-opacity-10 backdrop-blur-sm p-8">
+                        <div class="text-4xl font-bold mb-2">3-6 mo</div>
+                        <div class="text-xl">ROI Payback</div>
+                    </div>
+                </div>
+
+                <div class="bg-white bg-opacity-15 backdrop-blur-sm p-8 max-w-3xl mx-auto">
+                    <h3 class="text-3xl font-bold mb-4">Qualia Solutions</h3>
+                    <p class="text-xl mb-6">Leading AI Solutions Provider</p>
+                    <div class="grid grid-cols-3 gap-8 text-center">
+                        <div>
+                            <div class="text-3xl font-bold">22+</div>
+                            <div class="text-sm opacity-90">Active AI Solutions</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold">5</div>
+                            <div class="text-sm opacity-90">Countries</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold">$5M</div>
+                            <div class="text-sm opacity-90">Year 3 ARR Target</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Market Problem & Opportunity -->
+        <section class="slide bg-gray-50 flex items-center">
+            <div class="max-w-7xl mx-auto px-8 py-16">
+                <!-- Simple explanation comment box -->
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 p-6 mb-12">
+                    <h3 class="text-lg font-bold text-yellow-800 mb-2">💡 What This Slide Shows</h3>
+                    <p class="text-yellow-700">This compares the current problem (companies wasting money on cloud servers) with the business opportunity (growing digital transformation market). Think of it like comparing a leaky pipe (current state) with the size of the water bill (market opportunity).</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-5xl font-bold text-red-800 mb-8">Current State</h2>
+                        <div class="space-y-6">
+                            <div class="bg-white border-l-4 border-red-600 p-6 shadow-lg">
+                                <div class="text-2xl font-bold text-red-600 mb-2">40%</div>
+                                <p class="text-gray-800 font-medium">Wasted cloud spending due to poor optimization</p>
+                                <p class="text-sm text-gray-600 mt-2">💭 Like paying for a 10-bedroom house when you only use 6 rooms</p>
+                            </div>
+                            <div class="bg-white border-l-4 border-red-600 p-6 shadow-lg">
+                                <div class="text-2xl font-bold text-red-600 mb-2">8+ hours</div>
+                                <p class="text-gray-800 font-medium">Weekly manual monitoring per IT team</p>
+                                <p class="text-sm text-gray-600 mt-2">💭 Like having someone watch your car engine 24/7 instead of using sensors</p>
+                            </div>
+                            <div class="bg-white border-l-4 border-red-600 p-6 shadow-lg">
+                                <div class="text-2xl font-bold text-red-600 mb-2">Reactive</div>
+                                <p class="text-gray-800 font-medium">Fire-fighting approach to infrastructure issues</p>
+                                <p class="text-sm text-gray-600 mt-2">💭 Like calling an ambulance instead of preventing the accident</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h2 class="text-5xl font-bold text-blue-800 mb-8">Market Opportunity</h2>
+                        <div class="space-y-6">
+                            <div class="bg-white border-l-4 border-blue-600 p-6 shadow-lg">
+                                <div class="text-2xl font-bold text-blue-600 mb-2">$500B+</div>
+                                <p class="text-gray-800 font-medium">Global cloud infrastructure market by 2030</p>
+                                <p class="text-sm text-gray-600 mt-2">💭 The total amount companies worldwide will spend on cloud technology</p>
+                            </div>
+                            <div class="bg-white border-l-4 border-green-600 p-6 shadow-lg">
+                                <div class="text-2xl font-bold text-green-600 mb-2">20.53%</div>
+                                <p class="text-gray-800 font-medium">Public cloud CAGR growth rate</p>
+                                <p class="text-sm text-gray-600 mt-2">💭 Cloud spending is growing 5x faster than the overall economy</p>
+                            </div>
+                            <div class="bg-white border-l-4 border-purple-600 p-6 shadow-lg">
+                                <div class="text-2xl font-bold text-purple-600 mb-2">85%</div>
+                                <p class="text-gray-800 font-medium">Companies prioritizing digital transformation</p>
+                                <p class="text-sm text-gray-600 mt-2">💭 Almost every company is moving to cloud - perfect timing for our solution</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Solution Capabilities -->
+        <section class="slide bg-blue-50 flex items-center">
+            <div class="max-w-7xl mx-auto px-8 py-16">
+                <!-- Simple explanation comment box -->
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 p-6 mb-12">
+                    <h3 class="text-lg font-bold text-yellow-800 mb-2">💡 What This Slide Shows</h3>
+                    <p class="text-yellow-700">This explains how CloudIQ Pro works like a smart assistant for your servers. Think of it as having a personal trainer for your cloud infrastructure - it predicts problems, optimizes costs, and keeps everything running smoothly across all your cloud providers.</p>
+                </div>
+
+                <div class="text-center mb-16">
+                    <h2 class="text-5xl font-bold text-blue-800 mb-6">What CloudIQ Pro Delivers</h2>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-12">
+                    <div class="space-y-8">
+                        <div class="bg-white p-8 shadow-lg border-l-4 border-blue-600">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Predictive Intelligence</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• 15-60 minute advance warning of issues</li>
+                                <li>• AI-powered anomaly detection</li>
+                                <li>• Automated capacity planning</li>
+                            </ul>
+                            <p class="text-sm text-gray-600 mt-3">💭 Like having a weather forecast for your servers - you know problems are coming before they happen</p>
+                        </div>
+                        
+                        <div class="bg-white p-8 shadow-lg border-l-4 border-green-600">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Cost Optimization</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• Up to 40% reduction in cloud spending</li>
+                                <li>• Automated resource right-sizing</li>
+                                <li>• Real-time cost tracking and alerts</li>
+                            </ul>
+                            <p class="text-sm text-gray-600 mt-3">💭 Like having an automatic thermostat that adjusts your cloud usage to save money without affecting performance</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-8">
+                        <div class="bg-white p-8 shadow-lg border-l-4 border-purple-600">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Multi-Cloud Management</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• AWS, Azure, GCP unified monitoring</li>
+                                <li>• Single dashboard for all providers</li>
+                                <li>• Cross-cloud cost comparison</li>
+                            </ul>
+                            <p class="text-sm text-gray-600 mt-3">💭 Like having one remote control for all your streaming services instead of juggling multiple apps</p>
+                        </div>
+                        
+                        <div class="bg-white p-8 shadow-lg border-l-4 border-orange-600">
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Operational Excellence</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• 99.9% uptime through automation</li>
+                                <li>• 80% reduction in manual intervention</li>
+                                <li>• Self-healing infrastructure capabilities</li>
+                            </ul>
+                            <p class="text-sm text-gray-600 mt-3">💭 Like having a self-driving car for your cloud - it handles routine maintenance automatically</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Demo Reference -->
+        <section class="slide bg-gray-900 flex items-center">
+            <div class="max-w-7xl mx-auto px-8 py-16 w-full">
+                <!-- Simple explanation comment box -->
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 p-6 mb-8">
+                    <h3 class="text-lg font-bold text-yellow-800 mb-2">💡 What This Slide Shows</h3>
+                    <p class="text-yellow-700">This represents the actual CloudIQ Pro system. In the live presentation, this would show the real dashboard with servers, alerts, and cost savings updating every 5 seconds. Everything you would see is real data, not a mockup.</p>
+                </div>
+
+                <div class="text-center mb-8">
+                    <h2 class="text-5xl font-bold text-white mb-4">Live System Demonstration</h2>
+                    <p class="text-xl text-gray-300 mb-8">Real-time AI monitoring and optimization in action</p>
+                </div>
+                
+                <div class="bg-white p-8" style="min-height: 60vh;">
+                    <div class="text-center py-16">
+                        <div class="text-6xl mb-6">🖥️</div>
+                        <h3 class="text-3xl font-bold text-gray-800 mb-4">CloudIQ Pro Dashboard</h3>
+                        <p class="text-xl text-gray-600 mb-8">In the live presentation, this shows:</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-left max-w-4xl mx-auto">
+                            <div class="bg-blue-50 p-4 border-l-4 border-blue-500">
+                                <h4 class="font-bold text-blue-800">Real Servers</h4>
+                                <p class="text-sm text-blue-600">AWS, Azure, GCP infrastructure</p>
+                            </div>
+                            <div class="bg-red-50 p-4 border-l-4 border-red-500">
+                                <h4 class="font-bold text-red-800">AI Alerts</h4>
+                                <p class="text-sm text-red-600">Predictive warnings</p>
+                            </div>
+                            <div class="bg-green-50 p-4 border-l-4 border-green-500">
+                                <h4 class="font-bold text-green-800">Cost Savings</h4>
+                                <p class="text-sm text-green-600">Real-time optimization</p>
+                            </div>
+                            <div class="bg-purple-50 p-4 border-l-4 border-purple-500">
+                                <h4 class="font-bold text-purple-800">Live Data</h4>
+                                <p class="text-sm text-purple-600">Updates every 5 seconds</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 grid grid-cols-4 gap-4 text-center text-white">
+                    <div class="bg-blue-600 p-3">
+                        <div class="font-bold">Real-time AI Alerts</div>
+                        <div class="text-xs mt-1">Warns before problems happen</div>
+                    </div>
+                    <div class="bg-green-600 p-3">
+                        <div class="font-bold">Predictive Analytics</div>
+                        <div class="text-xs mt-1">Forecasts future resource needs</div>
+                    </div>
+                    <div class="bg-purple-600 p-3">
+                        <div class="font-bold">Multi-cloud Monitoring</div>
+                        <div class="text-xs mt-1">Watches AWS, Azure, GCP together</div>
+                    </div>
+                    <div class="bg-orange-600 p-3">
+                        <div class="font-bold">Cost Optimization</div>
+                        <div class="text-xs mt-1">Automatically reduces spending</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Business Model -->
+        <section class="slide bg-green-50 flex items-center">
+            <div class="max-w-7xl mx-auto px-8 py-16">
+                <!-- Simple explanation comment box -->
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 p-6 mb-12">
+                    <h3 class="text-lg font-bold text-yellow-800 mb-2">💡 What This Slide Shows</h3>
+                    <p class="text-yellow-700">This shows our simple pricing like Netflix subscriptions - you pay monthly based on how many servers you have. The important part is that customers typically save more money than they pay us, making it a profitable investment from day one.</p>
+                </div>
+
+                <div class="text-center mb-16">
+                    <h2 class="text-5xl font-bold text-green-800 mb-6">Pricing & ROI</h2>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-16">
+                    <div>
+                        <h3 class="text-3xl font-bold text-gray-900 mb-8">SaaS Pricing Tiers</h3>
+                        <div class="space-y-6">
+                            <div class="bg-white p-6 shadow-lg border-l-4 border-blue-600">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="text-xl font-bold text-gray-900">Starter</h4>
+                                        <p class="text-gray-600">Up to 50 resources</p>
+                                    </div>
+                                    <div class="text-3xl font-bold text-blue-600">$299/mo</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-6 shadow-lg border-l-4 border-purple-600">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="text-xl font-bold text-gray-900">Professional</h4>
+                                        <p class="text-gray-600">Up to 200 resources</p>
+                                    </div>
+                                    <div class="text-3xl font-bold text-purple-600">$899/mo</div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white p-6 shadow-lg border-l-4 border-green-600">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="text-xl font-bold text-gray-900">Enterprise</h4>
+                                        <p class="text-gray-600">Up to 1,000 resources</p>
+                                    </div>
+                                    <div class="text-3xl font-bold text-green-600">$2,499/mo</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-3xl font-bold text-gray-900 mb-8">Revenue Projections</h3>
+                        <div class="bg-white p-8 shadow-xl">
+                            <div class="space-y-8">
+                                <div class="text-center border-b pb-6">
+                                    <div class="text-4xl font-bold text-blue-600 mb-2">$500K</div>
+                                    <div class="text-gray-600">Year 1 ARR • 50+ customers</div>
+                                </div>
+                                
+                                <div class="text-center border-b pb-6">
+                                    <div class="text-4xl font-bold text-purple-600 mb-2">$2M</div>
+                                    <div class="text-gray-600">Year 2 ARR • 200+ customers</div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <div class="text-4xl font-bold text-green-600 mb-2">$5M</div>
+                                    <div class="text-gray-600">Year 3 ARR • Global expansion</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 bg-green-600 text-white p-6 text-center">
+                            <div class="text-2xl font-bold mb-2">3-6 Months</div>
+                            <div>Customer ROI Payback Period</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Next Steps -->
+        <section class="slide gradient-qualia flex items-center text-white">
+            <div class="max-w-7xl mx-auto px-8 py-16 text-center">
+                <!-- Simple explanation comment box -->
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 p-6 mb-8 text-left max-w-3xl mx-auto">
+                    <h3 class="text-lg font-bold text-yellow-800 mb-2">💡 What This Slide Shows</h3>
+                    <p class="text-yellow-700">This explains how to get started - it's like a simple 3-step process. We offer a free trial (like Netflix's free month), then help you set everything up, and guarantee you'll save money. Think of it as a risk-free way to test if we can really help your business.</p>
+                </div>
+
+                <h2 class="text-6xl font-bold mb-16">Next Steps</h2>
+                
+                <div class="grid grid-cols-3 gap-12 mb-16">
+                    <div class="bg-white bg-opacity-10 backdrop-blur-sm p-8">
+                        <div class="text-6xl font-bold mb-4">1</div>
+                        <h3 class="text-2xl font-bold mb-4">Free Pilot</h3>
+                        <p class="text-lg">30-day trial with immediate results</p>
+                    </div>
+                    
+                    <div class="bg-white bg-opacity-10 backdrop-blur-sm p-8">
+                        <div class="text-6xl font-bold mb-4">2</div>
+                        <h3 class="text-2xl font-bold mb-4">Implementation</h3>
+                        <p class="text-lg">2-4 weeks full deployment</p>
+                    </div>
+                    
+                    <div class="bg-white bg-opacity-10 backdrop-blur-sm p-8">
+                        <div class="text-6xl font-bold mb-4">3</div>
+                        <h3 class="text-2xl font-bold mb-4">ROI Delivery</h3>
+                        <p class="text-lg">Guaranteed 20%+ cost reduction</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white text-blue-600 px-16 py-8 text-2xl font-bold inline-block shadow-2xl hover:shadow-3xl transition-all cursor-pointer mb-12">
+                    Schedule CloudIQ Pro Demo
+                </div>
+                
+                <div class="grid grid-cols-3 gap-12 text-lg">
+                    <div>
+                        <div class="font-bold mb-2">Contact</div>
+                        <div>+1 555 123 4567</div>
+                        <div>cloudiq@qualiasolutions.com</div>
+                    </div>
+                    <div>
+                        <div class="font-bold mb-2">Qualia Solutions</div>
+                        <div>Leading AI Solutions Provider</div>
+                    </div>
+                    <div>
+                        <div class="font-bold mb-2">Market Position</div>
+                        <div>First-mover advantage in market</div>
+                        <div>Global expansion ready</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 7;
+        
+        function updateSlideNumber() {
+            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            
+            document.querySelectorAll('.nav-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+        
+        function goToSlide(slideIndex) {
+            currentSlide = slideIndex;
+            const container = document.getElementById('presentationContainer');
+            container.scrollTop = slideIndex * window.innerHeight;
+            updateSlideNumber();
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                if (currentSlide < totalSlides - 1) {
+                    goToSlide(currentSlide + 1);
+                }
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentSlide > 0) {
+                    goToSlide(currentSlide - 1);
+                }
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                goToSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                goToSlide(totalSlides - 1);
+            }
+        });
+        
+        let scrollTimeout;
+        document.getElementById('presentationContainer').addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                const container = document.getElementById('presentationContainer');
+                const newSlide = Math.round(container.scrollTop / window.innerHeight);
+                if (newSlide !== currentSlide) {
+                    currentSlide = newSlide;
+                    updateSlideNumber();
+                }
+            }, 50);
+        });
+        
+        updateSlideNumber();
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "cloudiq-pro",
+  "version": "1.0.0",
+  "description": "CloudIQ Pro - AI-Powered Cloud Infrastructure Intelligence Platform",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 3000",
+    "build": "echo 'Static site - no build required'",
+    "start": "echo 'Static site ready for deployment'"
+  },
+  "keywords": [
+    "cloud",
+    "monitoring", 
+    "ai",
+    "analytics",
+    "infrastructure",
+    "cost-optimization",
+    "predictive-analytics"
+  ],
+  "author": "Qualia Solutions",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Qualiasolutions/CloudIQPro"
+  },
+  "homepage": "https://cloudiq-pro.vercel.app",
+  "dependencies": {},
+  "devDependencies": {}
+}

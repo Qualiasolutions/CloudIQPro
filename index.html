@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CloudIQ Pro - AI-Powered Cloud Infrastructure Intelligence Platform. Monitor, optimize, and predict cloud performance with advanced AI analytics.">
+    <meta name="keywords" content="cloud monitoring, AI analytics, infrastructure optimization, cost reduction, predictive alerts">
+    <meta name="author" content="Qualia Solutions">
+    <meta property="og:title" content="CloudIQ Pro - AI-Powered Cloud Intelligence">
+    <meta property="og:description" content="Save 40% on cloud costs with AI-powered infrastructure intelligence and predictive analytics.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CloudIQ Pro - AI-Powered Cloud Intelligence">
+    <meta name="twitter:description" content="Save 40% on cloud costs with AI-powered infrastructure intelligence and predictive analytics.">
+    
+    <title>CloudIQ Pro - AI-Powered Cloud Intelligence</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+          --background: 0 0% 100%;
+          --foreground: 222.2 84% 4.9%;
+          --card: 0 0% 100%;
+          --card-foreground: 222.2 84% 4.9%;
+          --primary: 221.2 83.2% 53.3%;
+          --primary-foreground: 210 40% 98%;
+          --muted-foreground: 215.4 16.3% 46.9%;
+          --border: 214.3 31.8% 91.4%;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          background-color: hsl(var(--background));
+          color: hsl(var(--foreground));
+          font-family: 'Inter', sans-serif;
+          margin: 0;
+          padding: 0;
+          line-height: 1.6;
+        }
+
+        .bg-card { background-color: hsl(var(--card)); }
+        .bg-primary { background-color: hsl(var(--primary)); }
+        .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+        .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+        .border { border-color: hsl(var(--border)); }
+
+        .metric-card {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar {
+            background-color: hsl(var(--primary) / 0.15);
+            height: 8px;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .progress-indicator {
+            background: linear-gradient(90deg, hsl(var(--primary)), hsl(262.1 83.3% 57.8%));
+            height: 100%;
+            transition: all 0.8s ease;
+            border-radius: 4px;
+        }
+        
+        .server-card {
+            transition: all 0.3s ease;
+            border: 2px solid hsl(var(--border));
+            border-radius: 12px;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        }
+        .server-card:hover {
+            border-color: hsl(var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .live-indicator {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.6; }
+        }
+
+        .alert-card {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+        .alert-card:hover {
+            transform: translateX(4px);
+        }
+
+        .recommendation-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .recommendation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .container { padding-left: 1rem; padding-right: 1rem; }
+            .grid-responsive { grid-template-columns: 1fr; }
+            .text-responsive { font-size: 1.25rem; }
+            .metric-card { padding: 1rem; }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: 222.2 84% 4.9%;
+                --foreground: 210 40% 98%;
+                --card: 222.2 84% 4.9%;
+                --border: 217.2 32.6% 17.5%;
+            }
+            .server-card, .recommendation-card {
+                background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+            }
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        card: {
+                            DEFAULT: "hsl(var(--card))",
+                            foreground: "hsl(var(--card-foreground))",
+                        },
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-foreground antialiased">
+    <!-- Header -->
+    <header class="border-b bg-card shadow-sm sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="flex h-12 w-12 items-center justify-center bg-primary text-primary-foreground rounded-lg">
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-foreground">CloudIQ Pro</h1>
+                        <p class="text-sm text-muted-foreground">AI-Powered Cloud Intelligence Platform</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6 lg:space-x-8">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-foreground" id="uptime">99.7%</div>
+                        <div class="text-xs text-muted-foreground">System Uptime</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-foreground" id="total-servers">4</div>
+                        <div class="text-xs text-muted-foreground">Active Servers</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-foreground" id="alerts-count">3</div>
+                        <div class="text-xs text-muted-foreground">Active Alerts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="container mx-auto px-6 py-8 space-y-8 max-w-7xl">
+        <!-- Key Metrics Cards -->
+        <section aria-labelledby="metrics-heading">
+            <h2 id="metrics-heading" class="sr-only">Key Performance Metrics</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-card border p-6 shadow-sm metric-card">
+                    <div class="flex items-center justify-between">
+                        <div class="space-y-2">
+                            <p class="text-sm font-medium text-muted-foreground">Total Monthly Cost</p>
+                            <p class="text-3xl font-bold text-foreground" id="total-cost">$714.40</p>
+                        </div>
+                        <div class="flex h-12 w-12 items-center justify-center bg-blue-100 text-blue-600 rounded-lg">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-card border p-6 shadow-sm metric-card">
+                    <div class="flex items-center justify-between">
+                        <div class="space-y-2">
+                            <p class="text-sm font-medium text-muted-foreground">AI-Predicted Savings</p>
+                            <p class="text-3xl font-bold text-green-600" id="potential-savings">$142.88</p>
+                        </div>
+                        <div class="flex h-12 w-12 items-center justify-center bg-green-100 text-green-600 rounded-lg">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-card border p-6 shadow-sm metric-card">
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-muted-foreground">Active Predictions</p>
+                        <p class="text-3xl font-bold text-purple-600">2</p>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center bg-purple-100 text-purple-600 rounded-lg">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="bg-card border p-6 shadow-sm metric-card">
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-muted-foreground">System Health</p>
+                        <div class="flex items-center space-x-2">
+                            <span class="status-dot bg-yellow-500"></span>
+                            <p class="text-3xl font-bold text-yellow-600">Warning</p>
+                        </div>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center bg-yellow-100 text-yellow-600 rounded-lg">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Alerts and Performance Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+                <div class="bg-card border shadow-sm rounded-lg overflow-hidden">
+                    <div class="flex items-center justify-between border-b px-6 py-4">
+                        <div class="flex items-center space-x-3">
+                            <svg class="h-5 w-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                            </svg>
+                            <h2 class="text-xl font-semibold text-foreground">AI Alert System</h2>
+                        </div>
+                        <span class="inline-flex items-center px-3 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full live-indicator">
+                            ● LIVE
+                        </span>
+                    </div>
+                    <div class="p-6">
+                        <div id="alerts-container" class="space-y-4">
+                            <!-- Alerts will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="bg-card border shadow-sm rounded-lg overflow-hidden">
+                    <div class="border-b px-6 py-4">
+                        <h2 class="text-xl font-semibold text-foreground flex items-center space-x-3">
+                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                            <span>Performance Trends</span>
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <div style="height: 300px;">
+                            <canvas id="performance-chart" class="w-full h-full"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Infrastructure Overview -->
+        <section>
+            <div class="bg-card border shadow-sm rounded-lg overflow-hidden">
+                <div class="border-b px-6 py-4">
+                    <h2 class="text-xl font-semibold text-foreground flex items-center space-x-3">
+                        <svg class="h-5 w-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                        </svg>
+                        <span>Infrastructure Overview</span>
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="servers-grid">
+                        <!-- Server cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Recommendations -->
+        <section>
+            <div class="bg-card border shadow-sm rounded-lg overflow-hidden">
+                <div class="border-b px-6 py-4">
+                    <h2 class="text-xl font-semibold text-foreground flex items-center space-x-3">
+                        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                        <span>AI-Powered Recommendations</span>
+                    </h2>
+                </div>
+                <div class="p-6">
+                    <div id="recommendations-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Recommendations will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t bg-card mt-16">
+        <div class="container mx-auto px-6 py-8 max-w-7xl">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="text-center md:text-left mb-4 md:mb-0">
+                    <p class="text-sm text-muted-foreground">
+                        © 2024 Qualia Solutions. AI-Powered Cloud Intelligence Platform.
+                    </p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-xs text-muted-foreground">Last updated: <span id="last-updated"></span></span>
+                    <div class="flex items-center space-x-2 text-xs text-muted-foreground">
+                        <span class="status-dot bg-green-500"></span>
+                        <span>All systems operational</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Enhanced generic mock data for universal demo
+        const mockData = {
+            metrics: {
+                totalCost: 714.40,
+                potentialSavings: 142.88,
+                uptime: 99.7,
+                serversCount: 4,
+                alertsCount: 3
+            },
+            alerts: [
+                {
+                    id: 1,
+                    type: "prediction",
+                    severity: "high",
+                    message: "E-commerce frontend CPU will reach 95% in 45 minutes - expected traffic surge",
+                    server: "web-frontend",
+                    timestamp: new Date(Date.now() - 300000).toISOString()
+                },
+                {
+                    id: 2,
+                    type: "cost",
+                    severity: "medium",
+                    message: "Analytics database can be downsized during off-peak hours to save $89/month",
+                    server: "analytics-db",
+                    timestamp: new Date(Date.now() - 900000).toISOString()
+                },
+                {
+                    id: 3,
+                    type: "anomaly",
+                    severity: "low",
+                    message: "Unusual API request pattern detected on payment gateway",
+                    server: "payment-api",
+                    timestamp: new Date(Date.now() - 1800000).toISOString()
+                }
+            ],
+            servers: [
+                {
+                    id: 1,
+                    name: "web-frontend",
+                    provider: "AWS",
+                    region: "us-east-1",
+                    status: "warning",
+                    cpu: 78,
+                    memory: 82,
+                    cost: 189.50,
+                    prediction: "increasing",
+                    description: "E-commerce frontend cluster"
+                },
+                {
+                    id: 2,
+                    name: "analytics-db",
+                    provider: "Azure",
+                    region: "eastus",
+                    status: "healthy",
+                    cpu: 45,
+                    memory: 67,
+                    cost: 234.80,
+                    prediction: "stable",
+                    description: "Analytics and reporting database"
+                },
+                {
+                    id: 3,
+                    name: "payment-api",
+                    provider: "GCP",
+                    region: "us-central1",
+                    status: "healthy",
+                    cpu: 23,
+                    memory: 41,
+                    cost: 156.20,
+                    prediction: "stable",
+                    description: "Payment processing API"
+                },
+                {
+                    id: 4,
+                    name: "cache-cluster",
+                    provider: "AWS",
+                    region: "us-east-1",
+                    status: "critical",
+                    cpu: 91,
+                    memory: 95,
+                    cost: 133.90,
+                    prediction: "critical",
+                    description: "Redis cache cluster"
+                }
+            ]
+        };
+
+        const mockRecommendations = {
+            recommendations: [
+                {
+                    type: "cost",
+                    description: "Downsize analytics-db during nighttime hours when processing volume drops 70%",
+                    savings: 89.40,
+                    priority: "High"
+                },
+                {
+                    type: "performance",
+                    description: "Enable auto-scaling for web-frontend to handle traffic spikes automatically",
+                    impact: "50% faster response times"
+                },
+                {
+                    type: "security",
+                    description: "Update SSL certificates for payment-api - expires in 14 days",
+                    priority: "Critical"
+                }
+            ]
+        };
+
+        class CloudIQProDemo {
+            constructor() {
+                this.data = mockData;
+                this.chart = null;
+                this.isVisible = true;
+                this.init();
+            }
+
+            init() {
+                this.initializeChart();
+                this.updateDashboard();
+                this.updateRecommendations();
+                this.updateFooter();
+                this.setupVisibilityHandler();
+                
+                // Simulate real-time updates every 5 seconds
+                this.updateInterval = setInterval(() => {
+                    if (this.isVisible) {
+                        this.simulateDataUpdate();
+                        this.updateDashboard();
+                    }
+                }, 5000);
+            }
+
+            setupVisibilityHandler() {
+                document.addEventListener('visibilitychange', () => {
+                    this.isVisible = !document.hidden;
+                });
+            }
+
+            simulateDataUpdate() {
+                // Add realistic variation to metrics
+                this.data.metrics.totalCost += (Math.random() - 0.5) * 20;
+                this.data.metrics.potentialSavings += (Math.random() - 0.5) * 10;
+                
+                // Ensure reasonable bounds
+                this.data.metrics.totalCost = Math.max(500, Math.min(1200, this.data.metrics.totalCost));
+                this.data.metrics.potentialSavings = Math.max(50, Math.min(300, this.data.metrics.potentialSavings));
+                
+                // Update server metrics with more realistic patterns
+                this.data.servers.forEach(server => {
+                    // Simulate usage patterns based on server type
+                    if (server.name === 'web-frontend') {
+                        // Higher variance for web servers
+                        server.cpu += (Math.random() - 0.5) * 15;
+                        server.memory += (Math.random() - 0.5) * 10;
+                    } else if (server.name === 'cache-cluster') {
+                        // Cache servers tend to be more stable but can spike
+                        server.cpu += (Math.random() - 0.5) * 8;
+                        server.memory += (Math.random() - 0.5) * 12;
+                    } else {
+                        // Database and API servers are more stable
+                        server.cpu += (Math.random() - 0.5) * 6;
+                        server.memory += (Math.random() - 0.5) * 5;
+                    }
+                    
+                    // Keep values in realistic bounds
+                    server.cpu = Math.max(10, Math.min(95, server.cpu));
+                    server.memory = Math.max(20, Math.min(98, server.memory));
+                    
+                    // Update status based on metrics
+                    if (server.cpu > 85 || server.memory > 90) {
+                        server.status = 'critical';
+                        server.prediction = 'critical';
+                    } else if (server.cpu > 70 || server.memory > 80) {
+                        server.status = 'warning';
+                        server.prediction = 'increasing';
+                    } else {
+                        server.status = 'healthy';
+                        server.prediction = 'stable';
+                    }
+                });
+            }
+
+            updateDashboard() {
+                this.updateMetrics();
+                this.updateAlerts();
+                this.updateServers();
+                this.updateChart();
+            }
+
+            updateMetrics() {
+                const metrics = this.data.metrics;
+                
+                // Animate number changes
+                this.animateValue('total-cost', parseFloat(document.getElementById('total-cost').textContent.replace('$', '')), metrics.totalCost, '$');
+                this.animateValue('potential-savings', parseFloat(document.getElementById('potential-savings').textContent.replace('$', '')), metrics.potentialSavings, '$');
+                
+                document.getElementById('uptime').textContent = `${metrics.uptime}%`;
+                document.getElementById('total-servers').textContent = metrics.serversCount;
+                document.getElementById('alerts-count').textContent = metrics.alertsCount;
+            }
+
+            animateValue(elementId, start, end, prefix = '') {
+                const element = document.getElementById(elementId);
+                const duration = 1000;
+                const startTime = performance.now();
+                
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    const current = start + (end - start) * this.easeOutCubic(progress);
+                    element.textContent = `${prefix}${current.toFixed(2)}`;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
+
+            easeOutCubic(t) {
+                return 1 - Math.pow(1 - t, 3);
+            }
+
+            updateAlerts() {
+                const container = document.getElementById('alerts-container');
+                container.innerHTML = '';
+                
+                this.data.alerts.slice(0, 5).forEach((alert, index) => {
+                    const alertDiv = document.createElement('div');
+                    const severityClasses = {
+                        low: 'bg-blue-50 border-l-4 border-l-blue-500',
+                        medium: 'bg-yellow-50 border-l-4 border-l-yellow-500',
+                        high: 'bg-red-50 border-l-4 border-l-red-500'
+                    };
+                    
+                    const severityTextClasses = {
+                        low: 'text-blue-800',
+                        medium: 'text-yellow-800',
+                        high: 'text-red-800'
+                    };
+                    
+                    const severityBadgeClasses = {
+                        low: 'bg-blue-100 text-blue-800',
+                        medium: 'bg-yellow-100 text-yellow-800',
+                        high: 'bg-red-100 text-red-800'
+                    };
+                    
+                    const icons = {
+                        anomaly: `<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                                  </svg>`,
+                        prediction: `<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                     </svg>`,
+                        cost: `<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                               </svg>`
+                    };
+                    
+                    alertDiv.className = `alert-card p-4 ${severityClasses[alert.severity]} ${severityTextClasses[alert.severity]}`;
+                    alertDiv.style.animationDelay = `${index * 100}ms`;
+                    alertDiv.innerHTML = `
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 mt-0.5">
+                                ${icons[alert.type]}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-medium">${alert.message}</div>
+                                <div class="text-xs text-muted-foreground mt-1">
+                                    ${new Date(alert.timestamp).toLocaleTimeString()} • Server: ${alert.server}
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-1 text-xs font-medium ${severityBadgeClasses[alert.severity]} rounded-full">
+                                ${alert.severity.toUpperCase()}
+                            </span>
+                        </div>
+                    `;
+                    
+                    container.appendChild(alertDiv);
+                });
+            }
+
+            updateServers() {
+                const container = document.getElementById('servers-grid');
+                container.innerHTML = '';
+                
+                this.data.servers.forEach((server, index) => {
+                    const serverCard = document.createElement('div');
+                    const statusClasses = {
+                        healthy: 'bg-green-100 text-green-800',
+                        warning: 'bg-yellow-100 text-yellow-800',
+                        critical: 'bg-red-100 text-red-800'
+                    };
+                    
+                    const providerLogos = {
+                        AWS: `<svg class="h-5 w-5 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7.8 15.2c-2.2 0-4.3-.5-6.1-1.6-.2-.1-.2-.4 0-.5.1-.1.3-.1.4 0 1.6.9 3.5 1.4 5.7 1.4 2.8 0 5.9-.6 8.6-1.8.1 0 .3 0 .4.1.1.1.1.3 0 .4-2.9 1.4-6.2 2-9 2zm9.8-2.4c-.3-.4-2.1-.2-2.9-.1-.3 0-.3-.2-.1-.4 1.4-1 3.7-.7 4-.4.3.4-.1 2.8-.2 3.9 0 .3-.2.2-.2 0 0-.9-.3-3 .4-3z"/>
+                              </svg>`,
+                        Azure: `<svg class="h-5 w-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M5.1 14.7l4.8-11.3c.2-.4.6-.7 1.1-.7h2c.4 0 .8.2 1 .6l7.5 17.1c.2.4-.1.9-.5.9H18c-.4 0-.8-.2-1-.6l-1.9-4.3H8.9l-3.3 4.8c-.2.3-.5.4-.8.4H2.6c-.4 0-.7-.5-.5-.9zm7.4-8.2L9.8 12h5.4l-2.7-5.5z"/>
+                                </svg>`,
+                        GCP: `<svg class="h-5 w-5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+                                 <path d="M12.5 8.7c-.8-.6-1.8-.9-2.8-.9-2.4 0-4.4 2-4.4 4.4s2 4.4 4.4 4.4c1.4 0 2.6-.7 3.4-1.7h-3.4v-1.8h5.9c.1.4.1.8.1 1.2 0 3.3-2.2 5.7-5.9 5.7-3.4 0-6.2-2.8-6.2-6.2s2.8-6.2 6.2-6.2c1.7 0 3.2.7 4.3 1.8l-1.6 1.3z"/>
+                               </svg>`
+                    };
+                    
+                    serverCard.className = 'server-card p-6';
+                    serverCard.style.animationDelay = `${index * 150}ms`;
+                    serverCard.innerHTML = `
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex-shrink-0">
+                                    ${providerLogos[server.provider]}
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-foreground text-lg">${server.name}</h3>
+                                    <p class="text-xs text-muted-foreground">${server.provider} • ${server.region}</p>
+                                    <p class="text-xs text-blue-600 font-medium mt-1">${server.description}</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center px-3 py-1 text-xs font-medium ${statusClasses[server.status]} rounded-full">
+                                ${server.status.toUpperCase()}
+                            </span>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-muted-foreground">CPU Usage</span>
+                                    <span class="font-medium">${Math.round(server.cpu)}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-indicator" style="width: ${server.cpu}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-muted-foreground">Memory Usage</span>
+                                    <span class="font-medium">${Math.round(server.memory)}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-indicator" style="width: ${server.memory}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-4 border-t border-gray-100 space-y-3">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-muted-foreground">Monthly Cost</span>
+                                    <span class="font-semibold text-lg">$${server.cost}</span>
+                                </div>
+                                
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-muted-foreground">AI Prediction</span>
+                                    <span class="font-medium px-2 py-1 rounded-full text-xs ${server.prediction === 'critical' ? 'bg-red-100 text-red-700' : server.prediction === 'increasing' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}">
+                                        ${server.prediction}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(serverCard);
+                });
+            }
+
+            updateRecommendations() {
+                const container = document.getElementById('recommendations-container');
+                container.innerHTML = '';
+                
+                mockRecommendations.recommendations.forEach((rec, index) => {
+                    const recCard = document.createElement('div');
+                    const typeIcons = {
+                        cost: `<svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                               </svg>`,
+                        performance: `<svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                      </svg>`,
+                        security: `<svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                   </svg>`
+                    };
+                    
+                    recCard.className = 'recommendation-card p-6 border border-gray-200';
+                    recCard.style.animationDelay = `${index * 200}ms`;
+                    recCard.innerHTML = `
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0 mt-1">
+                                ${typeIcons[rec.type]}
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-foreground capitalize mb-3 text-lg">${rec.type} Optimization</h4>
+                                <p class="text-sm text-muted-foreground mb-4 leading-relaxed">${rec.description}</p>
+                                
+                                <div class="flex flex-wrap gap-2">
+                                    ${rec.savings ? `<div class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                                        💰 Save $${rec.savings}/mo
+                                    </div>` : ''}
+                                    
+                                    ${rec.impact ? `<div class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+                                        ⚡ ${rec.impact}
+                                    </div>` : ''}
+                                    
+                                    ${rec.priority ? `<div class="inline-flex items-center px-3 py-1 bg-red-100 text-red-800 text-sm font-medium rounded-full">
+                                        🚨 ${rec.priority} Priority
+                                    </div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(recCard);
+                });
+            }
+
+            initializeChart() {
+                const ctx = document.getElementById('performance-chart').getContext('2d');
+                this.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['6h ago', '5h ago', '4h ago', '3h ago', '2h ago', '1h ago', 'Now'],
+                        datasets: [{
+                            label: 'CPU Usage (%)',
+                            data: [45, 52, 48, 61, 55, 67, 58],
+                            borderColor: 'hsl(221.2 83.2% 53.3%)',
+                            backgroundColor: 'hsl(221.2 83.2% 53.3% / 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 3,
+                            pointBackgroundColor: 'hsl(221.2 83.2% 53.3%)',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                        }, {
+                            label: 'Memory Usage (%)',
+                            data: [67, 71, 69, 75, 78, 82, 79],
+                            borderColor: 'hsl(262.1 83.3% 57.8%)',
+                            backgroundColor: 'hsl(262.1 83.3% 57.8% / 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            borderWidth: 3,
+                            pointBackgroundColor: 'hsl(262.1 83.3% 57.8%)',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index',
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 20,
+                                    font: { size: 12 },
+                                    usePointStyle: true,
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: { 
+                                    color: 'hsl(214.3 31.8% 91.4%)',
+                                    drawBorder: false,
+                                },
+                                ticks: { 
+                                    font: { size: 11 },
+                                    padding: 8,
+                                }
+                            },
+                            x: {
+                                grid: { 
+                                    color: 'hsl(214.3 31.8% 91.4%)',
+                                    drawBorder: false,
+                                },
+                                ticks: { 
+                                    font: { size: 11 },
+                                    padding: 8,
+                                }
+                            }
+                        },
+                        elements: {
+                            point: { 
+                                radius: 4, 
+                                hoverRadius: 8,
+                                hoverBorderWidth: 3,
+                            }
+                        }
+                    }
+                });
+            }
+
+            updateChart() {
+                if (!this.chart || !this.data) return;
+                
+                const currentCpu = this.data.servers.reduce((sum, s) => sum + s.cpu, 0) / this.data.servers.length;
+                const currentMemory = this.data.servers.reduce((sum, s) => sum + s.memory, 0) / this.data.servers.length;
+                
+                this.chart.data.datasets[0].data.shift();
+                this.chart.data.datasets[0].data.push(Math.round(currentCpu));
+                
+                this.chart.data.datasets[1].data.shift();
+                this.chart.data.datasets[1].data.push(Math.round(currentMemory));
+                
+                this.chart.update('none');
+            }
+
+            updateFooter() {
+                document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+            }
+
+            destroy() {
+                if (this.updateInterval) {
+                    clearInterval(this.updateInterval);
+                }
+                if (this.chart) {
+                    this.chart.destroy();
+                }
+            }
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.cloudIQDemo = new CloudIQProDemo();
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (window.cloudIQDemo) {
+                window.cloudIQDemo.destroy();
+            }
+        });
+    </script>
+</body>
+</html>

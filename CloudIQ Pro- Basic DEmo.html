@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudIQ Pro - AI-Powered Cloud Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+          --background: 0 0% 100%;
+          --foreground: 222.2 84% 4.9%;
+          --card: 0 0% 100%;
+          --card-foreground: 222.2 84% 4.9%;
+          --primary: 221.2 83.2% 53.3%;
+          --primary-foreground: 210 40% 98%;
+          --muted-foreground: 215.4 16.3% 46.9%;
+          --border: 214.3 31.8% 91.4%;
+        }
+
+        body {
+          background-color: hsl(var(--background));
+          color: hsl(var(--foreground));
+          font-family: 'Inter', sans-serif;
+        }
+
+        .bg-card { background-color: hsl(var(--card)); }
+        .bg-primary { background-color: hsl(var(--primary)); }
+        .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+        .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+        .border { border-color: hsl(var(--border)); }
+
+        .metric-card {
+            transition: all 0.2s ease-in-out;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .progress-bar {
+            background-color: hsl(var(--primary) / 0.2);
+            height: 6px;
+            overflow: hidden;
+        }
+        .progress-indicator {
+            background-color: hsl(var(--primary));
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+        .server-card {
+            transition: all 0.2s ease-in-out;
+            border: 2px solid hsl(var(--border));
+        }
+        .server-card:hover {
+            border-color: hsl(var(--primary));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .live-indicator {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        card: {
+                            DEFAULT: "hsl(var(--card))",
+                            foreground: "hsl(var(--card-foreground))",
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-foreground antialiased">
+    <!-- Header -->
+    <header class="border-b bg-card shadow-sm">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="flex h-12 w-12 items-center justify-center bg-primary text-primary-foreground">
+                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-foreground">CloudIQ Pro</h1>
+                        <p class="text-sm text-muted-foreground">AI-Powered Cloud Intelligence Platform</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-8">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-foreground" id="uptime">99.7%</div>
+                        <div class="text-xs text-muted-foreground">System Uptime</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-foreground" id="total-servers">4</div>
+                        <div class="text-xs text-muted-foreground">Active Servers</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-foreground" id="alerts-count">3</div>
+                        <div class="text-xs text-muted-foreground">Active Alerts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="container mx-auto px-6 py-8 space-y-8">
+        <!-- Key Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-card border p-6 shadow-sm metric-card">
+                <div class="flex items-center justify-between">
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-muted-foreground">Total Monthly Cost</p>
+                        <p class="text-3xl font-bold text-foreground" id="total-cost">$714.40</p>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center bg-blue-100 text-blue-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-card border p-6 shadow-sm metric-card">
+                <div class="flex items-center justify-between">
+                    <div class="space-y-2">
+                        <p class="text-sm font-medium text-muted-foreground">AI-Predicted Savings</p>
+                        <p class="text-3xl font-bold text-green-600" id="potential-savings">$142.88</p>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center bg-green-100 text-green-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-card border p-6 shadow-sm metric-card">
+                <div class="space-y-2">
+                    <p class="text-sm font-medium text-muted-foreground">Active Predictions</p>
+                    <p class="text-3xl font-bold text-purple-600">2</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center bg-purple-100 text-purple-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="bg-card border p-6 shadow-sm metric-card">
+                <div class="space-y-2">
+                    <p class="text-sm font-medium text-muted-foreground">System Health</p>
+                    <div class="flex items-center space-x-2">
+                        <span class="inline-flex h-2 w-2 bg-yellow-500"></span>
+                        <p class="text-3xl font-bold text-yellow-600">Warning</p>
+                    </div>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center bg-yellow-100 text-yellow-600">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Alerts and Performance Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2">
+                <div class="bg-card border shadow-sm">
+                    <div class="flex items-center justify-between border-b px-6 py-4">
+                        <div class="flex items-center space-x-3">
+                            <svg class="h-5 w-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                            </svg>
+                            <h2 class="text-xl font-semibold text-foreground">AI Alert System</h2>
+                        </div>
+                        <span class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-700 bg-red-100 live-indicator">
+                            LIVE
+                        </span>
+                    </div>
+                    <div class="p-6">
+                        <div id="alerts-container" class="space-y-4">
+                            <!-- Alerts will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="bg-card border shadow-sm">
+                    <div class="border-b px-6 py-4">
+                        <h2 class="text-xl font-semibold text-foreground flex items-center space-x-3">
+                            <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                            <span>Performance Trends</span>
+                        </h2>
+                    </div>
+                    <div class="p-6">
+                        <canvas id="performance-chart" width="300" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Infrastructure Overview -->
+        <div class="bg-card border shadow-sm">
+            <div class="border-b px-6 py-4">
+                <h2 class="text-xl font-semibold text-foreground flex items-center space-x-3">
+                    <svg class="h-5 w-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                    </svg>
+                    <span>Infrastructure Overview</span>
+                </h2>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="servers-grid">
+                    <!-- Server cards will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Recommendations -->
+        <div class="bg-card border shadow-sm">
+            <div class="border-b px-6 py-4">
+                <h2 class="text-xl font-semibold text-foreground flex items-center space-x-3">
+                    <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                    </svg>
+                    <span>AI-Powered Recommendations</span>
+                </h2>
+            </div>
+            <div class="p-6">
+                <div id="recommendations-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Recommendations will be populated here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Generic mock data for universal demo
+        const mockData = {
+            metrics: {
+                totalCost: 714.40,
+                potentialSavings: 142.88,
+                uptime: 99.7,
+                serversCount: 4,
+                alertsCount: 3
+            },
+            alerts: [
+                {
+                    id: 1,
+                    type: "prediction",
+                    severity: "high",
+                    message: "E-commerce frontend CPU will reach 95% in 45 minutes - expected traffic surge",
+                    server: "web-frontend",
+                    timestamp: new Date(Date.now() - 300000).toISOString()
+                },
+                {
+                    id: 2,
+                    type: "cost",
+                    severity: "medium",
+                    message: "Analytics database can be downsized during off-peak hours to save $89/month",
+                    server: "analytics-db",
+                    timestamp: new Date(Date.now() - 900000).toISOString()
+                },
+                {
+                    id: 3,
+                    type: "anomaly",
+                    severity: "low",
+                    message: "Unusual API request pattern detected on payment gateway",
+                    server: "payment-api",
+                    timestamp: new Date(Date.now() - 1800000).toISOString()
+                }
+            ],
+            servers: [
+                {
+                    id: 1,
+                    name: "web-frontend",
+                    provider: "AWS",
+                    region: "us-east-1",
+                    status: "warning",
+                    cpu: 78,
+                    memory: 82,
+                    cost: 189.50,
+                    prediction: "increasing",
+                    description: "E-commerce frontend servers"
+                },
+                {
+                    id: 2,
+                    name: "analytics-db",
+                    provider: "Azure",
+                    region: "eastus",
+                    status: "healthy",
+                    cpu: 45,
+                    memory: 67,
+                    cost: 234.80,
+                    prediction: "stable",
+                    description: "Analytics and reporting database"
+                },
+                {
+                    id: 3,
+                    name: "payment-api",
+                    provider: "GCP",
+                    region: "us-central1",
+                    status: "healthy",
+                    cpu: 23,
+                    memory: 41,
+                    cost: 156.20,
+                    prediction: "stable",
+                    description: "Payment processing API"
+                },
+                {
+                    id: 4,
+                    name: "cache-cluster",
+                    provider: "AWS",
+                    region: "us-east-1",
+                    status: "critical",
+                    cpu: 91,
+                    memory: 95,
+                    cost: 133.90,
+                    prediction: "critical",
+                    description: "Redis cache cluster"
+                }
+            ]
+        };
+
+        const mockRecommendations = {
+            recommendations: [
+                {
+                    type: "cost",
+                    description: "Downsize analytics-db during nighttime hours when processing volume drops 70%",
+                    savings: 89.40,
+                    priority: "High"
+                },
+                {
+                    type: "performance",
+                    description: "Enable auto-scaling for web-frontend to handle traffic spikes automatically",
+                    impact: "50% faster response times"
+                },
+                {
+                    type: "security",
+                    description: "Update SSL certificates for payment-api - expires in 14 days",
+                    priority: "Critical"
+                }
+            ]
+        };
+
+        class CloudIQProDemo {
+            constructor() {
+                this.data = mockData;
+                this.chart = null;
+                this.init();
+            }
+
+            init() {
+                this.initializeChart();
+                this.updateDashboard();
+                this.updateRecommendations();
+                
+                // Simulate real-time updates every 5 seconds
+                setInterval(() => {
+                    this.simulateDataUpdate();
+                    this.updateDashboard();
+                }, 5000);
+            }
+
+            simulateDataUpdate() {
+                // Add some variation to metrics
+                this.data.metrics.totalCost += (Math.random() - 0.5) * 10;
+                this.data.metrics.potentialSavings += (Math.random() - 0.5) * 5;
+                
+                // Update server metrics
+                this.data.servers.forEach(server => {
+                    server.cpu += (Math.random() - 0.5) * 10;
+                    server.memory += (Math.random() - 0.5) * 8;
+                    server.cpu = Math.max(0, Math.min(100, server.cpu));
+                    server.memory = Math.max(0, Math.min(100, server.memory));
+                });
+            }
+
+            updateDashboard() {
+                this.updateMetrics();
+                this.updateAlerts();
+                this.updateServers();
+                this.updateChart();
+            }
+
+            updateMetrics() {
+                const metrics = this.data.metrics;
+                
+                document.getElementById('total-cost').textContent = `$${metrics.totalCost.toFixed(2)}`;
+                document.getElementById('potential-savings').textContent = `$${metrics.potentialSavings.toFixed(2)}`;
+                document.getElementById('uptime').textContent = `${metrics.uptime}%`;
+                document.getElementById('total-servers').textContent = metrics.serversCount;
+                document.getElementById('alerts-count').textContent = metrics.alertsCount;
+            }
+
+            updateAlerts() {
+                const container = document.getElementById('alerts-container');
+                container.innerHTML = '';
+                
+                this.data.alerts.slice(0, 5).forEach(alert => {
+                    const alertDiv = document.createElement('div');
+                    const severityClasses = {
+                        low: 'bg-blue-50 border-l-4 border-l-blue-500',
+                        medium: 'bg-yellow-50 border-l-4 border-l-yellow-500',
+                        high: 'bg-red-50 border-l-4 border-l-red-500'
+                    };
+                    
+                    const severityTextClasses = {
+                        low: 'text-blue-800',
+                        medium: 'text-yellow-800',
+                        high: 'text-red-800'
+                    };
+                    
+                    const severityBadgeClasses = {
+                        low: 'bg-blue-100 text-blue-800',
+                        medium: 'bg-yellow-100 text-yellow-800',
+                        high: 'bg-red-100 text-red-800'
+                    };
+                    
+                    const icons = {
+                        anomaly: `<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                                  </svg>`,
+                        prediction: `<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                     </svg>`,
+                        cost: `<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                               </svg>`
+                    };
+                    
+                    alertDiv.className = `p-4 ${severityClasses[alert.severity]} ${severityTextClasses[alert.severity]}`;
+                    alertDiv.innerHTML = `
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 mt-0.5">
+                                ${icons[alert.type]}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="text-sm font-medium">${alert.message}</div>
+                                <div class="text-xs text-muted-foreground mt-1">
+                                    ${new Date(alert.timestamp).toLocaleTimeString()} • Server: ${alert.server}
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-1 text-xs font-medium ${severityBadgeClasses[alert.severity]}">
+                                ${alert.severity.toUpperCase()}
+                            </span>
+                        </div>
+                    `;
+                    
+                    container.appendChild(alertDiv);
+                });
+            }
+
+            updateServers() {
+                const container = document.getElementById('servers-grid');
+                container.innerHTML = '';
+                
+                this.data.servers.forEach(server => {
+                    const serverCard = document.createElement('div');
+                    const statusClasses = {
+                        healthy: 'bg-green-100 text-green-800',
+                        warning: 'bg-yellow-100 text-yellow-800',
+                        critical: 'bg-red-100 text-red-800'
+                    };
+                    
+                    const providerLogos = {
+                        AWS: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M7.8 15.2c-2.2 0-4.3-.5-6.1-1.6-.2-.1-.2-.4 0-.5.1-.1.3-.1.4 0 1.6.9 3.5 1.4 5.7 1.4 2.8 0 5.9-.6 8.6-1.8.1 0 .3 0 .4.1.1.1.1.3 0 .4-2.9 1.4-6.2 2-9 2zm9.8-2.4c-.3-.4-2.1-.2-2.9-.1-.3 0-.3-.2-.1-.4 1.4-1 3.7-.7 4-.4.3.4-.1 2.8-.2 3.9 0 .3-.2.2-.2 0 0-.9-.3-3 .4-3z"/>
+                              </svg>`,
+                        Azure: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                  <path d="M5.1 14.7l4.8-11.3c.2-.4.6-.7 1.1-.7h2c.4 0 .8.2 1 .6l7.5 17.1c.2.4-.1.9-.5.9H18c-.4 0-.8-.2-1-.6l-1.9-4.3H8.9l-3.3 4.8c-.2.3-.5.4-.8.4H2.6c-.4 0-.7-.5-.5-.9zm7.4-8.2L9.8 12h5.4l-2.7-5.5z"/>
+                                </svg>`,
+                        GCP: `<svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                 <path d="M12.5 8.7c-.8-.6-1.8-.9-2.8-.9-2.4 0-4.4 2-4.4 4.4s2 4.4 4.4 4.4c1.4 0 2.6-.7 3.4-1.7h-3.4v-1.8h5.9c.1.4.1.8.1 1.2 0 3.3-2.2 5.7-5.9 5.7-3.4 0-6.2-2.8-6.2-6.2s2.8-6.2 6.2-6.2c1.7 0 3.2.7 4.3 1.8l-1.6 1.3z"/>
+                               </svg>`
+                    };
+                    
+                    serverCard.className = 'bg-card border server-card p-4';
+                    serverCard.innerHTML = `
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="text-gray-600">
+                                    ${providerLogos[server.provider]}
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-foreground">${server.name}</h3>
+                                    <p class="text-xs text-muted-foreground">${server.provider} • ${server.region}</p>
+                                    <p class="text-xs text-blue-600 font-medium">${server.description}</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center px-2 py-1 text-xs font-medium ${statusClasses[server.status]}">
+                                ${server.status.toUpperCase()}
+                            </span>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-muted-foreground">CPU Usage</span>
+                                    <span class="font-medium">${Math.round(server.cpu)}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-indicator" style="width: ${server.cpu}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span class="text-muted-foreground">Memory Usage</span>
+                                    <span class="font-medium">${Math.round(server.memory)}%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-indicator" style="width: ${server.memory}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-3 border-t space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-muted-foreground">Monthly Cost</span>
+                                    <span class="font-semibold">$${server.cost}</span>
+                                </div>
+                                
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-muted-foreground">AI Prediction</span>
+                                    <span class="font-medium ${server.prediction === 'critical' ? 'text-red-600' : server.prediction === 'increasing' ? 'text-yellow-600' : 'text-green-600'}">
+                                        ${server.prediction}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(serverCard);
+                });
+            }
+
+            updateRecommendations() {
+                const container = document.getElementById('recommendations-container');
+                container.innerHTML = '';
+                
+                mockRecommendations.recommendations.forEach(rec => {
+                    const recCard = document.createElement('div');
+                    const typeIcons = {
+                        cost: `<svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                               </svg>`,
+                        performance: `<svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                      </svg>`,
+                        security: `<svg class="h-5 w-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                   </svg>`
+                    };
+                    
+                    recCard.className = 'bg-card border p-4 server-card';
+                    recCard.innerHTML = `
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 mt-1">
+                                ${typeIcons[rec.type]}
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-foreground capitalize mb-2">${rec.type} Optimization</h4>
+                                <p class="text-sm text-muted-foreground mb-3">${rec.description}</p>
+                                
+                                ${rec.savings ? `<div class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 text-xs font-medium">
+                                    Potential Savings: $${rec.savings}
+                                </div>` : ''}
+                                
+                                ${rec.impact ? `<div class="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium">
+                                    ${rec.impact}
+                                </div>` : ''}
+                                
+                                ${rec.priority ? `<div class="inline-flex items-center px-2 py-1 bg-red-100 text-red-800 text-xs font-medium">
+                                    Priority: ${rec.priority}
+                                </div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(recCard);
+                });
+            }
+
+            initializeChart() {
+                const ctx = document.getElementById('performance-chart').getContext('2d');
+                this.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['6h ago', '5h ago', '4h ago', '3h ago', '2h ago', '1h ago', 'Now'],
+                        datasets: [{
+                            label: 'CPU Usage (%)',
+                            data: [45, 52, 48, 61, 55, 67, 58],
+                            borderColor: 'hsl(221.2 83.2% 53.3%)',
+                            backgroundColor: 'hsl(221.2 83.2% 53.3% / 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: 'Memory Usage (%)',
+                            data: [67, 71, 69, 75, 78, 82, 79],
+                            borderColor: 'hsl(262.1 83.3% 57.8%)',
+                            backgroundColor: 'hsl(262.1 83.3% 57.8% / 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 20,
+                                    font: { size: 11 }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: { color: 'hsl(214.3 31.8% 91.4%)' },
+                                ticks: { font: { size: 10 } }
+                            },
+                            x: {
+                                grid: { color: 'hsl(214.3 31.8% 91.4%)' },
+                                ticks: { font: { size: 10 } }
+                            }
+                        },
+                        elements: {
+                            point: { radius: 3, hoverRadius: 6 }
+                        }
+                    }
+                });
+            }
+
+            updateChart() {
+                if (!this.chart || !this.data) return;
+                
+                const currentCpu = this.data.servers.reduce((sum, s) => sum + s.cpu, 0) / this.data.servers.length;
+                const currentMemory = this.data.servers.reduce((sum, s) => sum + s.memory, 0) / this.data.servers.length;
+                
+                this.chart.data.datasets[0].data.shift();
+                this.chart.data.datasets[0].data.push(Math.round(currentCpu));
+                
+                this.chart.data.datasets[1].data.shift();
+                this.chart.data.datasets[1].data.push(Math.round(currentMemory));
+                
+                this.chart.update('none');
+            }
+        }
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new CloudIQProDemo();
+        });
+    </script>
+</body>
+</html>
